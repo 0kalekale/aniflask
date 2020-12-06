@@ -12,8 +12,14 @@ def index():
 
 
 
-@app.route('/results', methods=['GET', 'POST'])
+@app.route('/search', methods=['GET', 'POST'])
 def res():
+    opt = request.form.get("mat")
+    if opt == "anime":
+        return a()
+    if opt == "manga":
+        return m()
+def a():
     a = request.form.get("sq")
     rs = animeSearch(a)
     url = []
@@ -32,8 +38,7 @@ def res():
         pass
     return render_template("result.html", title=title, desc=desc, sq=a, url= url, img=img)
 
-@app.route('/resultm', methods=['GET', 'POST'])
-def resm():
+def m():
     a = request.form.get("sq")
     rs = mangaSearch(a)
     url = []
