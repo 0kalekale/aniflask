@@ -12,49 +12,37 @@ def index():
 
 
 
-@app.route('/search', methods=['GET', 'POST'])
-def res():
+@app.route('/result', methods=['GET', 'POST'])
+def get_result():
     opt = request.form.get("mat")
-    if opt == "anime":
-        return a()
-    if opt == "manga":
-        return m()
-def a():
-    a = request.form.get("sq")
-    rs = animeSearch(a)
-    url = []
-    title = []
-    desc = []
-    img = []
-    try: 
-        for i in range(0, 4):
-            anime = Anime(rs.id(i))
-            id = r"https://anilist.co/anime/"+ str(rs.id(i))
-            url.append(id)
-            title.append(anime.title("romaji"))
-            desc.append(anime.description())
-            img.append(anime.coverImage('M')) 
-    except IndexError:
-        pass
-    return render_template("result.html", title=title, desc=desc, sq=a, url= url, img=img)
+    url, title, desc, img = [], [], [], []
 
-def m():
-    a = request.form.get("sq")
-    rs = mangaSearch(a)
-    url = []
-    title = []
-    desc = []
-    img = []
-    try: 
-        for i in range(0, 4):
-            manga = Manga(rs.id(i))
-            id = r"https://anilist.co/manga/"+ str(rs.id(i))
-            url.append(id)
-            title.append(manga.title("romaji"))
-            desc.append(manga.description())
-            img.append(manga.coverImage('M')) 
-    except IndexError:
-        pass
-    return render_template("result.html", title=title, desc=desc, sq=a, url= url, img=img)
+    if opt == "anime":
+        _search = animeSearch(request.form.get("sq"))
+        try: 
+            for i in range(0, 12):
+                _anime = Anime(_search.id(i))
+                id = r"https://anilist.co/anime/"+str(_search.id(i))
+                url.append(id)
+                title.append(_anime.title("romaji"))
+                desc.append(_anime.description())
+                img.append(_anime.coverImage('medium')) 
+        except IndexError:
+            pass
+    
+    elif opt == "manga":
+        _search = mangaSearch(request.form.get("sq"))
+        try: 
+            for i in range(0, 12):
+                _manga = Manga(_search.id(i))
+                id = r"https://anilist.co/manga/"+str(_search.id(i))
+                url.append(id)
+                title.append(_manga.title("romaji"))
+                desc.append(_manga.description())
+                img.append(_manga.coverImage('medium')) 
+        except IndexError:
+            pass                
+    return render_template("result.html", title=title, desc=desc, sq=request.form.get("sq"), url= url, img=img)
+
 if __name__ == "__main__":
     app.run()
